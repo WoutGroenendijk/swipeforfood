@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
 import { GestureTypes, SwipeGestureEventData } from "ui/gestures";
 import { GridLayout } from "ui/layouts/grid-layout";
 import { AbsoluteLayout } from "ui/layouts/absolute-layout";
@@ -8,6 +9,7 @@ import { CardService } from './card.service';
 import { Emoji } from './emoji';
 import { TNSFontIconService } from 'nativescript-ngx-fonticon';
 import { BackendService } from "../shared/backend.service";
+import * as ImageModule from "tns-core-modules/ui/image";
 
 @Component({
     selector: 's-card',
@@ -17,10 +19,11 @@ import { BackendService } from "../shared/backend.service";
 export class CardComponent implements OnInit {
 
     constructor(private cardService: CardService,
-                private fonticon: TNSFontIconService) {
+        private fonticon: TNSFontIconService, private router: Router) {
     }
 
-    emoji: Emoji[];
+    emoji: any[];
+    uri: string;
     code: string;
     i: number = 0;
 
@@ -34,10 +37,15 @@ export class CardComponent implements OnInit {
         this.emoji = this.cardService.getEmoji();
         //initial card
         this.code = this.emoji[this.i].code;
+        this.uri = this.emoji[this.i].uri;
         //get ready for the swiping!
         for (var key in this.emoji) {
             this.handleSwipe(key);
         }
+    }
+
+    onFilter() {
+        this.router.navigate(['/filter'])
     }
 
     handleSwipe(key: any) {
@@ -46,6 +54,9 @@ export class CardComponent implements OnInit {
 
         let grid = new GridLayout();
         let emoji = new Label();
+        let plaatje = new ImageModule.Image()
+
+
 
         let yes = <Label>this.yes.nativeElement;
         let no = <Label>this.no.nativeElement;
@@ -53,6 +64,7 @@ export class CardComponent implements OnInit {
 
         //set the emoji on the card
         emoji.text = this.emoji[key].code;
+        plaatje.src = this.emoji[key].uri;
         //android specific
         emoji.verticalAlignment = "middle";
 
@@ -62,7 +74,8 @@ export class CardComponent implements OnInit {
         grid.marginTop = this.i;
 
         //add the emoji to the grid, and the grid to the absolutelayout
-        grid.addChild(emoji);
+        if (emoji.text) grid.addChild(emoji);
+        if (plaatje.src) grid.addChild(plaatje);
         absolutelayout.addChild(grid);
 
         // //handle tapping
@@ -77,13 +90,13 @@ export class CardComponent implements OnInit {
         grid.on(GestureTypes.swipe, function (args: SwipeGestureEventData) {
             if (args.direction == 1) {
                 //right
-                yes.animate({opacity: 0, duration: 100})
-                    .then(() => yes.animate({opacity: 1, duration: 100}))
-                    .then(() => yes.animate({opacity: 0, duration: 100}))
+                yes.animate({ opacity: 0, duration: 200 })
+                    .then(() => yes.animate({ opacity: 1, duration: 200 }))
+                    .then(() => yes.animate({ opacity: 0, duration: 200 }))
                     .then(() =>
-                        grid.animate({translate: {x: 1000, y: 100}})
+                        grid.animate({ translate: { x: 1000, y: 100 } })
                             .then(function () {
-                                return grid.animate({translate: {x: 0, y: -2000}});
+                                return grid.animate({ translate: { x: 0, y: -2000 } });
                             })
                             .catch(function (e) {
                                 console.log(e.message);
@@ -95,13 +108,13 @@ export class CardComponent implements OnInit {
             }
             else {
                 //left
-                no.animate({opacity: 0, duration: 100})
-                    .then(() => no.animate({opacity: 1, duration: 100}))
-                    .then(() => no.animate({opacity: 0, duration: 100}))
+                no.animate({ opacity: 0, duration: 100 })
+                    .then(() => no.animate({ opacity: 1, duration: 100 }))
+                    .then(() => no.animate({ opacity: 0, duration: 100 }))
                     .then(() =>
-                        grid.animate({translate: {x: -1000, y: 100}})
+                        grid.animate({ translate: { x: -1000, y: 100 } })
                             .then(function () {
-                                return grid.animate({translate: {x: 0, y: -2000}});
+                                return grid.animate({ translate: { x: 0, y: -2000 } });
                             })
                             .catch(function (e) {
                                 console.log(e.message);

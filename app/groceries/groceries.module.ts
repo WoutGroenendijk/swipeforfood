@@ -6,6 +6,7 @@ import { GroceriesComponent } from "./groceries.component";
 import { GroceryListComponent } from "./grocery-list/grocery-list.component";
 import { ItemStatusPipe } from "./grocery-list/item-status.pipe";
 import { CardModule } from "../cards/card.module";
+import { FilterComponent } from "./filter.component";
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { CardModule } from "../cards/card.module";
     declarations: [
         GroceriesComponent,
         GroceryListComponent,
-        ItemStatusPipe
+        ItemStatusPipe,
+        FilterComponent,
     ],
     schemas: [NO_ERRORS_SCHEMA]
 })

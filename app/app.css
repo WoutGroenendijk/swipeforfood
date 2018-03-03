@@ -19,12 +19,13 @@ TextField {
 }
 .line-through {
   text-decoration: line-through;
-}
+} 
 
 
 .action-bar {
-  background-color:#F67982;
-  color: #FAEEC3;
+  background-color: #fff !important;
+  color: #F67982 !important;
+  padding-bottom: 50px;
 }
 .btn {
   border-width: 5;
